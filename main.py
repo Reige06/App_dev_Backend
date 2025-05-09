@@ -4,10 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# In-memory "database"
-energy_readings = []
+# Temporary storage (or replace with DB later)
+energy_log = []
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,11 +22,14 @@ class EnergyData(BaseModel):
     kwh: float
 
 @app.post("/data")
-def receive_data(data: EnergyData):
-    print(f"Received: {data}")
-    energy_readings.append(data)
-    return {"status": "success", "data": data}
+async def receive_data(data: EnergyData):
+    print("Received data:", data)
+    # Add ID for frontend display
+    entry = data.dict()
+    entry["id"] = len(energy_log) + 1
+    energy_log.append(entry)
+    return {"status": "success", "data": entry}
 
 @app.get("/data")
-def get_data():
-    return energy_readings[-10:]  # return last 10 readings (or modify as needed)
+async def get_data():
+    return energy_log[-10:]  # Return the last 10 entries (customize as needed)
