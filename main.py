@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 app = FastAPI()
 
@@ -24,12 +25,12 @@ class EnergyData(BaseModel):
 @app.post("/data")
 async def receive_data(data: EnergyData):
     print("Received data:", data)
-    # Add ID for frontend display
     entry = data.dict()
     entry["id"] = len(energy_log) + 1
+    entry["timestamp"] = datetime.utcnow().isoformat()
     energy_log.append(entry)
     return {"status": "success", "data": entry}
 
 @app.get("/data")
 async def get_data():
-    return energy_log[-10:]  # Return the last 10 entries (customize as needed)
+    return energy_log[-10:]  # Return the last 10 entries

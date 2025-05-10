@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, Float
+from sqlalchemy import Column, Integer, Float, DateTime
 from sqlalchemy.orm import declarative_base
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -9,4 +10,5 @@ class EnergyReading(Base):
     voltage = Column(Float, nullable=False)
     current = Column(Float, nullable=False)
     power = Column(Float, nullable=False)
-    kwh = Column(Float, nullable=False) 
+    kwh = Column(Float, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
