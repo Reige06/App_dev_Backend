@@ -6,7 +6,7 @@ import pytz
 
 app = FastAPI()
 
-# Temporary storage (or replace with DB later)
+
 energy_log = []
 
 app.add_middleware(
@@ -28,11 +28,10 @@ async def receive_data(data: EnergyData):
     print("Received data:", data)
     entry = data.dict()
     entry["id"] = len(energy_log) + 1
-    # Use Philippine Time for timestamp
     entry["timestamp"] = datetime.now(pytz.timezone("Asia/Manila")).isoformat()
     energy_log.append(entry)
     return {"status": "success", "data": entry}
 
 @app.get("/data")
 async def get_data():
-    return energy_log[-10:]  # Return the last 10 entries
+    return energy_log[-10:]
