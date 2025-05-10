@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+import pytz
 
 app = FastAPI()
 
@@ -27,7 +28,8 @@ async def receive_data(data: EnergyData):
     print("Received data:", data)
     entry = data.dict()
     entry["id"] = len(energy_log) + 1
-    entry["timestamp"] = datetime.utcnow().isoformat()
+    # Use Philippine Time for timestamp
+    entry["timestamp"] = datetime.now(pytz.timezone("Asia/Manila")).isoformat()
     energy_log.append(entry)
     return {"status": "success", "data": entry}
 
